@@ -25,13 +25,12 @@ namespace Wox.ViewModel
             {
                 if (string.IsNullOrEmpty(Result.IcoPath))
                 {
-                    var result = Result.Icon();
-                    if (result == null)
+                    if (Result.Icon == null)
                     {
                         Log.Warn($"|ResultViewModel.Image|IcoPath is empty and exception when calling Icon() for result <{Result.Title}> of plugin <{Result.PluginDirectory}>");
                         return ImageLoader.Load("Images\\app_error.png");
                     }
-                    return result;
+                    return Result.Icon();
                 }
                 else
                 {

@@ -215,6 +215,7 @@ namespace Wox.ViewModel
         {
             QueryTextCursorMovedToEnd = true;
             QueryText = queryText;
+            Query();
         }
         public bool LastQuerySelected { get; set; }
         public bool QueryTextCursorMovedToEnd { get; set; }
@@ -568,6 +569,13 @@ namespace Wox.ViewModel
         {
             if (!ShouldIgnoreHotkeys())
             {
+                if (!ResultsSelected())
+                {
+                    ContextMenu.Visbility = Visibility.Collapsed;
+                    History.Visbility = Visibility.Collapsed;
+                    Results.Visbility = Visibility.Visible;
+                    SelectedResults = Results;
+                }
 
                 if (_settings.LastQueryMode == LastQueryMode.Empty)
                 {
