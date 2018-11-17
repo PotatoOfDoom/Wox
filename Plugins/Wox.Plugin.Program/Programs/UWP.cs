@@ -35,7 +35,6 @@ namespace Wox.Plugin.Program.Programs
 
         public UWP(Package package)
         {
-
             Location = package.InstalledLocation.Path;
             Name = package.Id.Name;
             FullName = package.Id.FullName;
