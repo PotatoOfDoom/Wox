@@ -4,6 +4,7 @@ using System.Windows.Threading;
 using Wox.Infrastructure.Image;
 using Wox.Infrastructure.Logger;
 using Wox.Plugin;
+using Wox.Properties;
 
 
 namespace Wox.ViewModel
@@ -24,15 +25,13 @@ namespace Wox.ViewModel
             {
                 if (string.IsNullOrEmpty(Result.IcoPath))
                 {
-                    try
+                    var result = Result.Icon();
+                    if (result == null)
                     {
-                        return Result.Icon();
+                        Log.Warn($"|ResultViewModel.Image|IcoPath is empty and exception when calling Icon() for result <{Result.Title}> of plugin <{Result.PluginDirectory}>");
+                        return ImageLoader.Load("Images\\app_error.png");
                     }
-                    catch (Exception e)
-                    {
-                        Log.Exception($"|ResultViewModel.Image|IcoPath is empty and exception when calling Icon() for result <{Result.Title}> of plugin <{Result.PluginDirectory}>", e);
-                        return ImageLoader.Load(Result.IcoPath);
-                    }
+                    return result;
                 }
                 else
                 {
