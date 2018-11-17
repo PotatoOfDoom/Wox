@@ -215,7 +215,7 @@ namespace Wox.Plugin.PluginManagement
                                              "Install plugin", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
-                    context.API.RestarApp();
+                    context.API.RestartApp();
                 }
             }
         }
