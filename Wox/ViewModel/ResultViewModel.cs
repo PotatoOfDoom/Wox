@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Wox.Infrastructure;
 using Wox.Infrastructure.Image;
 using Wox.Infrastructure.Logger;
 using Wox.Plugin;
@@ -28,7 +29,7 @@ namespace Wox.ViewModel
                     if (Result.Icon == null)
                     {
                         Log.Warn($"|ResultViewModel.Image|IcoPath is empty and exception when calling Icon() for result <{Result.Title}> of plugin <{Result.PluginDirectory}>");
-                        return ImageLoader.Load("Images\\app_error.png");
+                        return ImageLoader.Load(Constant.ErrorIcon);
                     }
                     return Result.Icon();
                 }
