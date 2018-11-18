@@ -154,10 +154,10 @@ namespace Wox.ViewModel
             var results = Results.ToList();
 
             var temp = results.Where(r => r.Result.PluginID == resultId);
-            var oldResults = temp.ToList();
+            var oldResults = temp;
 
             // intersection of A (old results) and B (new newResults)
-            var intersection = oldResults.Intersect(newResults).ToList();
+            var intersection = oldResults.Intersect(newResults);
 
             // remove result of relative complement of B in A
             foreach (var result in oldResults.Except(intersection))
