@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Wox.Infrastructure.UserSettings;
+using NuGet;
+using Wox.Infrastructure.Logger;
 using Wox.Plugin;
+using Settings = Wox.Infrastructure.UserSettings.Settings;
 
 namespace Wox.ViewModel
 {
@@ -150,7 +152,9 @@ namespace Wox.ViewModel
         {
             var newResults = newRawResults.Select(r => new ResultViewModel(r)).ToList();
             var results = Results.ToList();
-            var oldResults = results.Where(r => r.Result.PluginID == resultId).ToList();
+
+            var temp = results.Where(r => r.Result.PluginID == resultId);
+            var oldResults = temp.ToList();
 
             // intersection of A (old results) and B (new newResults)
             var intersection = oldResults.Intersect(newResults).ToList();
