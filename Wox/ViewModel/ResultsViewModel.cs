@@ -154,7 +154,7 @@ namespace Wox.ViewModel
             var results = Results.ToList();
 
             var temp = results.Where(r => r.Result.PluginID == resultId);
-            var oldResults = temp;
+            List<ResultViewModel> oldResults = temp.ToList();
 
             // intersection of A (old results) and B (new newResults)
             var intersection = oldResults.Intersect(newResults);

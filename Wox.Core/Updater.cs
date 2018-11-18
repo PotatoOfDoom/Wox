@@ -18,62 +18,36 @@ namespace Wox.Core
 {
     public static class Updater
     {
-        private static readonly Internationalization Translater = InternationalizationManager.Instance;
+        private static readonly Internationalization Translator = InternationalizationManager.Instance;
 
         public static async Task UpdateApp()
         {
-            UpdateManager m;
-            UpdateInfo u;
-
-            try
-            {
-                m = await GitHubUpdateManager(Constant.Repository);
-            }
-            catch (Exception e) when (e is HttpRequestException || e is WebException || e is SocketException)
-            {
-                Log.Exception($"|Updater.UpdateApp|Please check your connection and proxy settings to api.github.com.", e);
-                return;
-            }
-
-            try
-            {
-                // UpdateApp CheckForUpdate will return value only if the app is squirrel installed
-                u = await m.CheckForUpdate().NonNull();
-            }
-            catch (Exception e) when (e is HttpRequestException || e is WebException || e is SocketException)
-            {
-                Log.Exception($"|Updater.UpdateApp|Check your connection and proxy settings to api.github.com.", e);
-                m.Dispose();
-                return;
-            }
-
-            var fr = u.FutureReleaseEntry;
-            var cr = u.CurrentlyInstalledVersion;
-            Log.Info($"|Updater.UpdateApp|Future Release <{fr.Formatted()}>");
-            if (fr.Version > cr.Version)
-            {
-                try
-                {
-                    await m.DownloadReleases(u.ReleasesToApply);
-                }
-                catch (Exception e) when (e is HttpRequestException || e is WebException || e is SocketException)
-                {
-                    Log.Exception($"|Updater.UpdateApp|Check your connection and proxy settings to github-cloud.s3.amazonaws.com.", e);
-                    m.Dispose();
-                    return;
-                }
-
-                await m.ApplyReleases(u);
-                await m.CreateUninstallerRegistryEntry();
-
-                var newVersionTips = Translater.GetTranslation("newVersionTips");
-                newVersionTips = string.Format(newVersionTips, fr.Version);
-                MessageBox.Show(newVersionTips);
-                Log.Info($"|Updater.UpdateApp|Update succeed:{newVersionTips}");
-            }
             
-            // always dispose UpdateManager
-            m.Dispose();
+            try
+            {
+                using (UpdateManager m = await GitHubUpdateManager(Constant.Repository))
+                {
+                    var u = await m.CheckForUpdate().NonNull();
+                    var fr = u.FutureReleaseEntry;
+                    var cr = u.CurrentlyInstalledVersion;
+                    Log.Info($"|Updater.UpdateApp|Future Release <{fr.Formatted()}>");
+                    if (fr.Version > cr.Version)
+                    {
+                        await m.DownloadReleases(u.ReleasesToApply);
+                        await m.ApplyReleases(u);
+                        await m.CreateUninstallerRegistryEntry();
+
+                        var newVersionTips = Translator.GetTranslation("newVersionTips");
+                        newVersionTips = string.Format(newVersionTips, fr.Version);
+                        MessageBox.Show(newVersionTips);
+                        Log.Info($"|Updater.UpdateApp|Update succeed:{newVersionTips}");
+                    }
+                }
+            }
+            catch (Exception e) when (e is HttpRequestException || e is WebException || e is SocketException)
+            {
+                Log.Exception($"|Updater.UpdateApp|Please check your connection and proxy settings to api.github.com and github-cloud.s3.amazonaws.com.", e);
+            }
         }
 
         [UsedImplicitly]
@@ -109,7 +83,7 @@ namespace Wox.Core
             return manager;
         }
 
-        public static string NewVersinoTips(string version)
+        public static string NewVersionTips(string version)
         {
             var translater = InternationalizationManager.Instance;
             var tips = string.Format(translater.GetTranslation("newVersionTips"), version);
