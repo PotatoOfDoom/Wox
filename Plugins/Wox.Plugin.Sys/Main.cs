@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
-using Shell32;
 using Wox.Infrastructure;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
@@ -143,18 +142,15 @@ namespace Wox.Plugin.Sys
                     IcoPath = "Images\\recyclebin.png",
                     Action = c =>
                     {
-                        if (GetRecycleBinCount() > 0)
+                        // http://www.pinvoke.net/default.aspx/shell32/SHEmptyRecycleBin.html
+                        // 0 for nothing
+                        var result = SHEmptyRecycleBin(new WindowInteropHelper(Application.Current.MainWindow).Handle, 0);
+                        if (result != (uint) HRESULT.S_OK)
                         {
-                            // http://www.pinvoke.net/default.aspx/shell32/SHEmptyRecycleBin.html
-                            // 0 for nothing
-                            var result = SHEmptyRecycleBin(new WindowInteropHelper(Application.Current.MainWindow).Handle, 0);
-                            if (result != (uint) HRESULT.S_OK)
-                            {
-                                MessageBox.Show($"Error emptying recycle bin, error code: {result}\n" +
-                                                "please refer to https://msdn.microsoft.com/en-us/library/windows/desktop/aa378137",
-                                    "Error",
-                                    MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
+                            MessageBox.Show($"Error emptying recycle bin, error code: {result}\n" +
+                                            "please refer to https://msdn.microsoft.com/en-us/library/windows/desktop/aa378137",
+                                            "Error",
+                                            MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         return true;
                     }
@@ -204,13 +200,6 @@ namespace Wox.Plugin.Sys
         public string GetTranslatedPluginDescription()
         {
             return context.API.GetTranslation("wox_plugin_sys_plugin_description");
-        }
-
-        private static int GetRecycleBinCount()
-        {
-            Shell shell = new Shell();
-            Folder recycleBin = shell.NameSpace(10);
-            return recycleBin.Items().Count;
         }
     }
 }
