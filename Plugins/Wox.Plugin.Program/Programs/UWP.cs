@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
+using Windows.Management;
 using AppxPackaing;
 using Shell;
 using Wox.Infrastructure;
