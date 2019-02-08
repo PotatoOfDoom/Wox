@@ -21,8 +21,8 @@ namespace Wox.Infrastructure
         public static readonly string Version = FileVersionInfo.GetVersionInfo(Assembly.Location.NonNull()).ProductVersion;
 
         public static readonly int ThumbnailSize = 64;
-        public static readonly string DefaultIcon = Path.Combine(ProgramDirectory, "Images", "app.png");
-        public static readonly string ErrorIcon = Path.Combine(ProgramDirectory, "Images", "app_error.png");
+        public static readonly string DefaultIcon = "pack://application:,,,/Images/app.png";
+        public static readonly string ErrorIcon = "pack://application:,,,/Images/app_error.png";
 
         public static string PythonPath;
         public static string EverythingSDKPath;

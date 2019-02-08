@@ -229,19 +229,19 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Images\update.png">
+    <Resource Include="Images\update.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Images\up.png">
+    </Resource>
+    <Resource Include="Images\up.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Images\down.png">
+    </Resource>
+    <Resource Include="Images\down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Images\history.png" />
-    <None Include="Images\app_error.png">
+    </Resource>
+    <Resource Include="Images\history.png" />
+    <Resource Include="Images\app_error.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Resource>
     <Resource Include="FodyWeavers.xml" />
     <Content Include="Languages\en.xaml">
       <SubType>Designer</SubType>
@@ -444,31 +444,31 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\app.png">
+    <Resource Include="Images\app.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\file.png">
+    <Resource Include="Images\file.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Images\open.png">
+    </Resource>
+    <Resource Include="Images\open.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\app.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\sleep.png">
+    <Resource Include="Images\sleep.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Resource>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-powershell.exe -NoProfile -File $(SolutionDir)Scripts\post_build.ps1 $(ConfigurationName) $(SolutionDir)</PostBuildEvent>
+    <PostBuildEvent>cd $(SolutionDir)
+powershell.exe -NoProfile -File "$(SolutionDir)Scripts\post_build.ps1" $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>taskkill /f /fi "IMAGENAME eq Wox.exe"</PreBuildEvent>
