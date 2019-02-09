@@ -245,6 +245,7 @@ namespace Wox.Plugin.Program.Programs
                 var score3 = StringMatcher.Score(Description, query);
                 var score4 = StringMatcher.ScoreForPinyin(Description, query);
                 var score = new[] { score1, score2, score3, score4 }.Max();
+                //var score = new[] { score1, score3 }.Max();
                 return score;
             }
 
@@ -365,29 +366,23 @@ namespace Wox.Plugin.Program.Programs
                         {
                             return loaded;
                         }
-                        else
-                        {
-                            Log.Error($"|UWP.ResourceFromPri|Can't load null or empty result pri <{source}> with uwp location <{Package.Location}>.");
-                            return string.Empty;
-                        }
-                    }
-                    else
-                    {
-                        // https://github.com/Wox-launcher/Wox/issues/964
-                        // known hresult 2147942522:
-                        // 'Microsoft Corporation' violates pattern constraint of '\bms-resource:.{1,256}'.
-                        // for
-                        // Microsoft.MicrosoftOfficeHub_17.7608.23501.0_x64__8wekyb3d8bbwe: ms-resource://Microsoft.MicrosoftOfficeHub/officehubintl/AppManifest_GetOffice_Description
-                        // Microsoft.BingFoodAndDrink_3.0.4.336_x64__8wekyb3d8bbwe: ms-resource:AppDescription
-                        var e = Marshal.GetExceptionForHR((int)hResult);
-                        Log.Exception($"|UWP.ResourceFromPri|Load pri failed <{source}> with HResult <{hResult}> and location <{Package.Location}>.", e);
+
+                        Log.Error($"|UWP.ResourceFromPri|Can't load null or empty result pri <{source}> with uwp location <{Package.Location}>.");
                         return string.Empty;
                     }
+
+                    // https://github.com/Wox-launcher/Wox/issues/964
+                    // known hresult 2147942522:
+                    // 'Microsoft Corporation' violates pattern constraint of '\bms-resource:.{1,256}'.
+                    // for
+                    // Microsoft.MicrosoftOfficeHub_17.7608.23501.0_x64__8wekyb3d8bbwe: ms-resource://Microsoft.MicrosoftOfficeHub/officehubintl/AppManifest_GetOffice_Description
+                    // Microsoft.BingFoodAndDrink_3.0.4.336_x64__8wekyb3d8bbwe: ms-resource:AppDescription
+                    var e = Marshal.GetExceptionForHR((int)hResult);
+                    Log.Exception($"|UWP.ResourceFromPri|Load pri failed <{source}> with HResult <{hResult}> and location <{Package.Location}>.", e);
+                    return string.Empty;
                 }
-                else
-                {
-                    return resourceReference;
-                }
+
+                return resourceReference;
             }
 
 
@@ -430,7 +425,7 @@ namespace Wox.Plugin.Program.Programs
                 }
 
                 var extension = Path.GetExtension(path);
-                if (extension != null)
+                if (extension != string.Empty)
                 {
                     var end = path.Length - extension.Length;
                     var prefix = path.Substring(0, end);
@@ -457,17 +452,13 @@ namespace Wox.Plugin.Program.Programs
                     {
                         return selected;
                     }
-                    else
-                    {
-                        Log.Error($"|UWP.LogoPathFromUri| <{UserModelId}> can't find logo uri for <{uri}>, Package location <{Package.Location}>.");
-                        return string.Empty;
-                    }
-                }
-                else
-                {
-                    Log.Error($"|UWP.LogoPathFromUri| <{UserModelId}> cantains can't find extension for <{uri}> Package location <{Package.Location}>.");
+
+                    Log.Error($"|UWP.LogoPathFromUri| <{UserModelId}> can't find logo uri for <{uri}>, Package location <{Package.Location}>.");
                     return string.Empty;
                 }
+
+                Log.Error($"|UWP.LogoPathFromUri| <{UserModelId}> cantains can't find extension for <{uri}> Package location <{Package.Location}>.");
+                return string.Empty;
             }
 
 

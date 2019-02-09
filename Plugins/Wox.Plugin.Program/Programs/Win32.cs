@@ -37,6 +37,7 @@ namespace Wox.Plugin.Program.Programs
             var score4 = StringMatcher.ScoreForPinyin(Description, query);
             var score5 = StringMatcher.Score(ExecutableName, query);
             var score = new[] { score1, score2, score3, score4, score5 }.Max();
+            //var score = new[] { score1, score3, score5 }.Max();
             return score;
         }
 
@@ -223,7 +224,6 @@ namespace Wox.Plugin.Program.Programs
                         catch (DirectoryNotFoundException e)
                         {
                             Log.Exception($"|Program.Win32.ProgramPaths|skip directory(<{currentDirectory}>)", e);
-                            continue;
                         }
                     }
                 }
@@ -250,14 +250,7 @@ namespace Wox.Plugin.Program.Programs
         private static string Extension(string path)
         {
             var extension = Path.GetExtension(path)?.ToLower();
-            if (!string.IsNullOrEmpty(extension))
-            {
-                return extension.Substring(1);
-            }
-            else
-            {
-                return string.Empty;
-            }
+            return !string.IsNullOrEmpty(extension) ? extension.Substring(1) : string.Empty;
         }
 
         private static ParallelQuery<Win32> UnregisteredPrograms(List<Settings.ProgramSource> sources, string[] suffixes)
@@ -323,36 +316,19 @@ namespace Wox.Plugin.Program.Programs
         {
             using (var key = root.OpenSubKey(subkey))
             {
-                if (key != null)
-                {
-                    var defaultValue = string.Empty;
-                    var path = key.GetValue(defaultValue) as string;
-                    if (!string.IsNullOrEmpty(path))
-                    {
-                        // fix path like this: ""\"C:\\folder\\executable.exe\""
-                        path = path.Trim('"', ' ');
-                        path = Environment.ExpandEnvironmentVariables(path);
+                if (key == null) return new Win32();
+                var defaultValue = string.Empty;
+                var path = key.GetValue(defaultValue) as string;
+                if (string.IsNullOrEmpty(path)) return new Win32();
+                // fix path like this: ""\"C:\\folder\\executable.exe\""
+                path = path.Trim('"', ' ');
+                path = Environment.ExpandEnvironmentVariables(path);
 
-                        if (File.Exists(path))
-                        {
-                            var entry = Win32Program(path);
-                            entry.ExecutableName = subkey;
-                            return entry;
-                        }
-                        else
-                        {
-                            return new Win32();
-                        }
-                    }
-                    else
-                    {
-                        return new Win32();
-                    }
-                }
-                else
-                {
-                    return new Win32();
-                }
+                if (!File.Exists(path)) return new Win32();
+                var entry = Win32Program(path);
+                entry.ExecutableName = subkey;
+                return entry;
+
             }
         }
 
