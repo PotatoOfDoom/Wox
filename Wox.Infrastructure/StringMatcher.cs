@@ -24,35 +24,24 @@ namespace Wox.Infrastructure
 
         public static int ScoreForPinyin(string source, string target)
         {
-            if (!string.IsNullOrEmpty(source) && !string.IsNullOrEmpty(target))
+            if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target)) return 0;
+            if (source.Length > 40)
             {
-                if(source.Length > 40)
-                {
-                    Log.Debug($"|Wox.Infrastructure.StringMatcher.ScoreForPinyin|skip too long string: {source}");
-                    return 0;
-                }
-                
-                if (Alphabet.ContainsChinese(source))
-                {
-                    FuzzyMatcher matcher = FuzzyMatcher.Create(target);
-                    var combination = Alphabet.PinyinComination(source);
-                    var pinyinScore = combination.Select(pinyin => matcher.Evaluate(string.Join("", pinyin)).Score)
-                        .Max();
-                    var acronymScore = combination.Select(Alphabet.Acronym)
-                        .Select(pinyin => matcher.Evaluate(pinyin).Score)
-                        .Max();
-                    var score = Math.Max(pinyinScore, acronymScore);
-                    return score;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            else
-            {
+                Log.Debug($"|Wox.Infrastructure.StringMatcher.ScoreForPinyin|skip too long string: {source}");
                 return 0;
             }
+
+            if (!Alphabet.ContainsChinese(source)) return 0;
+            FuzzyMatcher matcher = FuzzyMatcher.Create(target);
+            var combination = Alphabet.PinyinComination(source);
+            var pinyinScore = combination.Select(pinyin => matcher.Evaluate(string.Join("", pinyin)).Score)
+                .Max();
+            var acronymScore = combination.Select(Alphabet.Acronym)
+                .Select(pinyin => matcher.Evaluate(pinyin).Score)
+                .Max();
+            var score = Math.Max(pinyinScore, acronymScore);
+            return score;
+
         }
 
         public static bool IsMatch(string source, string target)

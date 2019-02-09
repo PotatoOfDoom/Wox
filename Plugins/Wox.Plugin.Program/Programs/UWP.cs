@@ -298,7 +298,7 @@ namespace Wox.Plugin.Program.Programs
                 return contextMenus;
             }
 
-            private async void Launch(IPublicAPI api)
+            public async void Launch(IPublicAPI api)
             {
                 var appManager = new ApplicationActivationManager();
                 uint unusedPid;
