@@ -182,10 +182,11 @@ namespace Wox.Plugin.Program.Programs
                     bool valid;
                     try
                     {
+                        var r = p.IsResourcePackage;
                         var f = p.IsFramework;
                         var d = p.IsDevelopmentMode;
                         var path = p.InstalledLocation.Path;
-                        valid = !f && !d && !string.IsNullOrEmpty(path);
+                        valid = !r && !f && !d && !string.IsNullOrEmpty(path);
                     }
                     catch (Exception e)
                     {
